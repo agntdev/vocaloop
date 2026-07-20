@@ -1,19 +1,44 @@
 [
   {
-    "name": "Import Starter Decks",
+    "name": "Import Starter Decks imports pre-built decks",
     "steps": [
       {
+        "send": { "callback": "deck:import_starter" },
         "expect": [
           {
-            "method": "sendMessage",
+            "method": "editMessageText",
             "payload": {
-              "text": "Import pre-built vocabulary decks"
+              "text": "✅ Imported Common Words and Useful Phrases with 10 cards."
             }
           }
-        ],
-        "send": {
-          "callback": "deck:import_starter"
-        }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Import Starter Decks shows already imported message",
+    "steps": [
+      {
+        "send": { "callback": "deck:import_starter" },
+        "expect": [
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "✅ Imported Common Words and Useful Phrases with 10 cards."
+            }
+          }
+        ]
+      },
+      {
+        "send": { "callback": "deck:import_starter" },
+        "expect": [
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "Starter decks are already imported."
+            }
+          }
+        ]
       }
     ]
   }

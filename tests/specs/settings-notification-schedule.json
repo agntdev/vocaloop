@@ -1,19 +1,44 @@
 [
   {
-    "name": "Notification Schedule",
+    "name": "Notification Schedule shows time picker",
     "steps": [
       {
+        "send": { "callback": "settings:notification_schedule" },
         "expect": [
           {
-            "method": "sendMessage",
+            "method": "editMessageText",
             "payload": {
-              "text": "Set or change daily reminder time"
+              "text": "Current reminder time: 09:00\n\nWhen should we remind you to review?"
             }
           }
-        ],
-        "send": {
-          "callback": "settings:notification_schedule"
-        }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Notification Schedule can be changed via button",
+    "steps": [
+      {
+        "send": { "callback": "settings:notification_schedule" },
+        "expect": [
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "Current reminder time: 09:00\n\nWhen should we remind you to review?"
+            }
+          }
+        ]
+      },
+      {
+        "send": { "callback": "settings:set_notif:18:00" },
+        "expect": [
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "✅ Reminder set for 18:00.\n\nWhen should we remind you to review?"
+            }
+          }
+        ]
       }
     ]
   }

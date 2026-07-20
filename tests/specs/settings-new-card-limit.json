@@ -1,19 +1,44 @@
 [
   {
-    "name": "Daily New-Card Limit",
+    "name": "Daily New-Card Limit shows limit picker",
     "steps": [
       {
+        "send": { "callback": "settings:new_card_limit" },
         "expect": [
           {
-            "method": "sendMessage",
+            "method": "editMessageText",
             "payload": {
-              "text": "Configure daily limit for new cards"
+              "text": "Current daily new-card limit: 10\n\nHow many new cards per day?"
             }
           }
-        ],
-        "send": {
-          "callback": "settings:new_card_limit"
-        }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Daily New-Card Limit can be changed via button",
+    "steps": [
+      {
+        "send": { "callback": "settings:new_card_limit" },
+        "expect": [
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "Current daily new-card limit: 10\n\nHow many new cards per day?"
+            }
+          }
+        ]
+      },
+      {
+        "send": { "callback": "settings:set_limit:20" },
+        "expect": [
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "✅ Daily new-card limit set to 20."
+            }
+          }
+        ]
       }
     ]
   }

@@ -1,17 +1,37 @@
 import { Composer } from "grammy";
+import type { Ctx } from "../bot.js";
+import { inlineButton, inlineKeyboard } from "../toolkit/index.js";
+import { getDecks, addStarterDecks } from "../data.js";
 
-// SCAFFOLD — generated from the bot blueprint BEFORE the agent runs.
-// Keep a LIVE registration (.command / .callbackQuery / …) so this feature is
-// never an empty stub. Replace the reply body with real logic + copy; if you
-// change the user-facing text, update tests/specs to match EXACTLY.
-// Do NOT rewrite src/bot.ts — buildBot() already auto-loads this module.
-// Menu: wire this into /start via registerMainMenuItem({ label: "Import Starter Decks", data: "deck:import_starter" }) if the toolkit exposes it.
-
-const composer = new Composer();
+const composer = new Composer<Ctx>();
 
 composer.callbackQuery("deck:import_starter", async (ctx) => {
   await ctx.answerCallbackQuery();
-  await ctx.reply("Import pre-built vocabulary decks");
+  const existing = getDecks(ctx).filter((d) => d.isStarterDeck);
+  if (existing.length > 0) {
+    await ctx.editMessageText("Starter decks are already imported.", {
+      reply_markup: inlineKeyboard([
+        [inlineButton("⬅️ Back to menu", "menu:main")],
+      ]),
+    });
+    return;
+  }
+  const decks = addStarterDecks(ctx);
+  let cardCount = 0;
+  for (const d of decks) {
+    const { getCardsForDeck } = await import("../data.js");
+    cardCount += getCardsForDeck(ctx, d.id).length;
+  }
+  const names = decks.map((d) => d.name).join(" and ");
+  await ctx.editMessageText(
+    `✅ Imported ${names} with ${cardCount} cards.`,
+    {
+      reply_markup: inlineKeyboard([
+        [inlineButton("📚 Browse decks", "deck:browse")],
+        [inlineButton("⬅️ Back to menu", "menu:main")],
+      ]),
+    },
+  );
 });
 
 export default composer;

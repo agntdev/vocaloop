@@ -1,15 +1,37 @@
 import { Composer } from "grammy";
+import type { Ctx } from "../bot.js";
+import { inlineButton, inlineKeyboard } from "../toolkit/index.js";
+import { getUserSettings, getDecks, getTotalCardsCount, getLearnedCardsCount, getDueCards } from "../data.js";
 
-// SCAFFOLD — generated from the bot blueprint BEFORE the agent runs.
-// Keep a LIVE registration (.command / .callbackQuery / …) so this feature is
-// never an empty stub. Replace the reply body with real logic + copy; if you
-// change the user-facing text, update tests/specs to match EXACTLY.
-// Do NOT rewrite src/bot.ts — buildBot() already auto-loads this module.
+const composer = new Composer<Ctx>();
 
-const composer = new Composer();
+function statsText(ctx: Ctx): string {
+  const settings = getUserSettings(ctx);
+  const decks = getDecks(ctx);
+  const totalCards = getTotalCardsCount(ctx);
+  const learnedCards = getLearnedCardsCount(ctx);
+  const now = Date.now();
+  let dueCount = 0;
+  for (const deck of decks) {
+    dueCount += getDueCards(ctx, deck.id, now).length;
+  }
+
+  const lines = [
+    "📊 Your progress",
+    "",
+    `Decks: ${decks.length}`,
+    `Total cards: ${totalCards}`,
+    `Learned: ${learnedCards}`,
+    `Due today: ${dueCount}`,
+    `Daily new-card limit: ${settings.dailyNewCardLimit}`,
+  ];
+  return lines.join("\n");
+}
 
 composer.command("stats", async (ctx) => {
-  await ctx.reply("Show user's learning progress and stats");
+  await ctx.reply(statsText(ctx), {
+    reply_markup: inlineKeyboard([[inlineButton("⬅️ Back to menu", "menu:main")]]),
+  });
 });
 
 export default composer;

@@ -1,19 +1,17 @@
 [
   {
-    "name": "/stats",
+    "name": "/stats shows learning progress",
     "steps": [
       {
+        "send": { "text": "/stats" },
         "expect": [
           {
             "method": "sendMessage",
             "payload": {
-              "text": "Show user's learning progress and stats"
+              "text": "📊 Your progress\n\nDecks: 0\nTotal cards: 0\nLearned: 0\nDue today: 0\nDaily new-card limit: 10"
             }
           }
-        ],
-        "send": {
-          "text": "/stats"
-        }
+        ]
       }
     ]
   }

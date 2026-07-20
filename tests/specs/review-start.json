@@ -1,19 +1,28 @@
 [
   {
-    "name": "Start Reviews",
+    "name": "Full review session flow",
     "steps": [
       {
+        "send": { "callback": "deck:import_starter" },
         "expect": [
           {
-            "method": "sendMessage",
+            "method": "editMessageText",
             "payload": {
-              "text": "Begin daily review session with scheduled cards"
+              "text": "✅ Imported Common Words and Useful Phrases with 10 cards."
             }
           }
-        ],
-        "send": {
-          "callback": "review:start"
-        }
+        ]
+      },
+      {
+        "send": { "callback": "review:start" },
+        "expect": [
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "📝 Choose a deck to review:"
+            }
+          }
+        ]
       }
     ]
   }

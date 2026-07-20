@@ -2,11 +2,54 @@ import { Composer } from "grammy";
 import { readdirSync } from "node:fs";
 import { createBot, type BotContext } from "./toolkit/index.js";
 
-// The per-chat session shape (ephemeral conversation state only). Extend as the
-// bot grows. Durable domain data must NOT live here — use the toolkit's
-// persistent storage (see AGENTS.md).
+export interface UserSettings {
+  dailyNewCardLimit: number;
+  notificationSchedule: string;
+}
+
+export interface DeckData {
+  id: string;
+  name: string;
+  userId: number;
+  isStarterDeck: boolean;
+  createdAt: number;
+}
+
+export interface CardData {
+  id: string;
+  deckId: string;
+  front: string;
+  back: string;
+  exampleSentence: string;
+  easeFactor: number;
+  intervalDays: number;
+  repetitionCount: number;
+  dueDate: number;
+  lastReviewed: number;
+  state: "new" | "learning" | "review" | "relearning";
+  createdAt: number;
+}
+
+export interface ReviewSessionData {
+  deckId: string;
+  cardIds: string[];
+  currentIndex: number;
+  startTime: number;
+}
+
 export interface Session {
-  // example: step?: "awaiting_amount";
+  step?: string;
+  deckName?: string;
+  cardFront?: string;
+  cardBack?: string;
+  cardExample?: string;
+  addCardDeckId?: string;
+  newCardLimitInput?: string;
+  notifScheduleInput?: string;
+  userSettings?: UserSettings;
+  decks?: DeckData[];
+  cards?: CardData[];
+  reviewSession?: ReviewSessionData;
 }
 
 export type Ctx = BotContext<Session>;

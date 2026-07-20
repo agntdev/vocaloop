@@ -1,22 +1,6 @@
 [
   {
-    "name": "Browse Decks shows empty state",
-    "steps": [
-      {
-        "send": { "callback": "deck:browse" },
-        "expect": [
-          {
-            "method": "editMessageText",
-            "payload": {
-              "text": "📚 No decks yet — tap Create Deck to add one."
-            }
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "name": "Browse Decks shows decks with card counts",
+    "name": "Add Card prompts for the word",
     "steps": [
       {
         "send": { "callback": "deck:import_starter" },
