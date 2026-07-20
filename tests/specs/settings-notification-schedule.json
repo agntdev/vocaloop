@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Notification Schedule",
+    "steps": [
+      {
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": {
+              "text": "Set or change daily reminder time"
+            }
+          }
+        ],
+        "send": {
+          "callback": "settings:notification_schedule"
+        }
+      }
+    ]
+  }
+]
