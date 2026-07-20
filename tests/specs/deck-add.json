@@ -1,19 +1,93 @@
 [
   {
-    "name": "Add Deck",
+    "name": "Add Deck creates a new deck via multi-step flow",
     "steps": [
       {
+        "send": { "callback": "deck:add" },
         "expect": [
           {
             "method": "sendMessage",
             "payload": {
-              "text": "Create a new deck for organizing cards"
+              "text": "What should this deck be called?"
             }
           }
-        ],
-        "send": {
-          "callback": "deck:add"
-        }
+        ]
+      },
+      {
+        "send": { "text": "Spanish Basics" },
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": {
+              "text": "✅ Deck \"Spanish Basics\" created."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Add Deck rejects empty name",
+    "steps": [
+      {
+        "send": { "callback": "deck:add" },
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": {
+              "text": "What should this deck be called?"
+            }
+          }
+        ]
+      },
+      {
+        "send": { "text": "   " },
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": {
+              "text": "Deck name should be 1–50 characters. Try again:"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Browse Decks shows list after creating a deck",
+    "steps": [
+      {
+        "send": { "callback": "deck:add" },
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": {
+              "text": "What should this deck be called?"
+            }
+          }
+        ]
+      },
+      {
+        "send": { "text": "My Deck" },
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": {
+              "text": "✅ Deck \"My Deck\" created."
+            }
+          }
+        ]
+      },
+      {
+        "send": { "callback": "deck:browse" },
+        "expect": [
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "📚 Your decks\n\nMy Deck — 0 cards, 0 due"
+            }
+          }
+        ]
       }
     ]
   }

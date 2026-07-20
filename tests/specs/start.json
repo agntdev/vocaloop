@@ -7,7 +7,7 @@
         "expect": [
           {
             "method": "sendMessage",
-            "payload": { "text": "👋 Welcome! Tap a button below to get started." }
+            "payload": { "text": "👋 Welcome to VocabSRS!\n\nBuild your vocabulary with spaced repetition. Add word cards, organize them into decks, and review daily to remember more." }
           }
         ]
       }
