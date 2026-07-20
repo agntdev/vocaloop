@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Daily New-Card Limit",
+    "steps": [
+      {
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": {
+              "text": "Configure daily limit for new cards"
+            }
+          }
+        ],
+        "send": {
+          "callback": "settings:new_card_limit"
+        }
+      }
+    ]
+  }
+]
