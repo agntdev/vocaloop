@@ -2,8 +2,18 @@ import type { Ctx } from "./bot.js";
 import type { DeckData, CardData, UserSettings } from "./bot.js";
 import { newCardScheduling } from "./sm2.js";
 
+let clock: () => number = () => Date.now();
+
+export function setClock(fn: () => number): void {
+  clock = fn;
+}
+
+export function now(): number {
+  return clock();
+}
+
 function uid(): string {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+  return now().toString(36) + Math.random().toString(36).slice(2, 8);
 }
 
 function ensureSession(ctx: Ctx): void {
@@ -43,7 +53,7 @@ export function addDeck(ctx: Ctx, name: string): DeckData {
     name,
     userId: ctx.from?.id ?? 0,
     isStarterDeck: false,
-    createdAt: Date.now(),
+    createdAt: now(),
   };
   ctx.session.decks!.push(deck);
   return deck;
@@ -76,8 +86,8 @@ export function addCard(
   exampleSentence: string,
 ): CardData {
   ensureSession(ctx);
-  const now = Date.now();
-  const scheduling = newCardScheduling(now);
+  const time = now();
+  const scheduling = newCardScheduling(time);
   const card: CardData = {
     id: uid(),
     deckId,
@@ -86,7 +96,7 @@ export function addCard(
     exampleSentence,
     ...scheduling,
     lastReviewed: 0,
-    createdAt: now,
+    createdAt: time,
   };
   ctx.session.cards!.push(card);
   return card;
@@ -113,9 +123,9 @@ export function getDueCards(ctx: Ctx, deckId: string, now: number): CardData[] {
   return cards.filter((c) => c.dueDate <= now);
 }
 
-export function getNewCardsToday(ctx: Ctx, now: number): number {
+export function getNewCardsToday(ctx: Ctx, currentTime: number): number {
   ensureSession(ctx);
-  const startOfDay = new Date(now);
+  const startOfDay = new Date(currentTime);
   startOfDay.setHours(0, 0, 0, 0);
   const dayStart = startOfDay.getTime();
   return ctx.session.cards!.filter(
@@ -135,7 +145,7 @@ export function getTotalCardsCount(ctx: Ctx): number {
 
 export function addStarterDecks(ctx: Ctx): DeckData[] {
   ensureSession(ctx);
-  const now = Date.now();
+  const time = now();
 
   const vocabDeck = addDeck(ctx, "Common Words");
   vocabDeck.isStarterDeck = true;
@@ -153,9 +163,9 @@ export function addStarterDecks(ctx: Ctx): DeckData[] {
       front: c.front,
       back: c.back,
       exampleSentence: c.example,
-      ...newCardScheduling(now),
+      ...newCardScheduling(time),
       lastReviewed: 0,
-      createdAt: now,
+      createdAt: time,
     };
     ctx.session.cards!.push(card);
   }
@@ -176,9 +186,9 @@ export function addStarterDecks(ctx: Ctx): DeckData[] {
       front: c.front,
       back: c.back,
       exampleSentence: c.example,
-      ...newCardScheduling(now),
+      ...newCardScheduling(time),
       lastReviewed: 0,
-      createdAt: now,
+      createdAt: time,
     };
     ctx.session.cards!.push(card);
   }

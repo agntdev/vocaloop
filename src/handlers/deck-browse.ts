@@ -1,7 +1,7 @@
 import { Composer } from "grammy";
 import type { Ctx } from "../bot.js";
 import { inlineButton, inlineKeyboard, registerMainMenuItem } from "../toolkit/index.js";
-import { getDecks, getCardsForDeck, deleteDeck, getDueCards } from "../data.js";
+import { getDecks, getCardsForDeck, deleteDeck, getDueCards, now } from "../data.js";
 
 registerMainMenuItem({ label: "📚 Decks", data: "deck:browse", order: 20 });
 
@@ -15,7 +15,7 @@ function deckListText(ctx: Ctx): string {
   const lines = ["📚 Your decks", ""];
   for (const deck of decks) {
     const cards = getCardsForDeck(ctx, deck.id);
-    const due = getDueCards(ctx, deck.id, Date.now()).length;
+    const due = getDueCards(ctx, deck.id, now()).length;
     lines.push(`${deck.name} — ${cards.length} cards, ${due} due`);
   }
   return lines.join("\n");
@@ -50,7 +50,7 @@ composer.callbackQuery(/^deck:view:(.+)$/, async (ctx) => {
     return;
   }
   const cards = getCardsForDeck(ctx, deckId);
-  const due = getDueCards(ctx, deckId, Date.now()).length;
+  const due = getDueCards(ctx, deckId, now()).length;
   const lines = [
     `📁 ${deck.name}`,
     `${cards.length} cards, ${due} due`,

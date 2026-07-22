@@ -1,7 +1,7 @@
 import { Composer } from "grammy";
 import type { Ctx } from "../bot.js";
 import { inlineButton, inlineKeyboard, registerMainMenuItem } from "../toolkit/index.js";
-import { getUserSettings, getDecks, getTotalCardsCount, getLearnedCardsCount, getDueCards } from "../data.js";
+import { getUserSettings, getDecks, getTotalCardsCount, getLearnedCardsCount, getDueCards, now } from "../data.js";
 
 registerMainMenuItem({ label: "📊 Stats", data: "stats:show", order: 45 });
 
@@ -12,10 +12,10 @@ function statsText(ctx: Ctx): string {
   const decks = getDecks(ctx);
   const totalCards = getTotalCardsCount(ctx);
   const learnedCards = getLearnedCardsCount(ctx);
-  const now = Date.now();
+  const currentTime = now();
   let dueCount = 0;
   for (const deck of decks) {
-    dueCount += getDueCards(ctx, deck.id, now).length;
+    dueCount += getDueCards(ctx, deck.id, currentTime).length;
   }
 
   const lines = [
