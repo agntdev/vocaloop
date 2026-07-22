@@ -1,0 +1,40 @@
+[
+  {
+    "name": "Add Card is blocked during active review session",
+    "steps": [
+      {
+        "send": { "callback": "deck:import_starter" },
+        "expect": [
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "✅ Imported Common Words and Useful Phrases with 10 cards."
+            }
+          }
+        ]
+      },
+      {
+        "send": { "callback": "review:start" },
+        "expect": [
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "📝 Choose a deck to review:"
+            }
+          }
+        ]
+      },
+      {
+        "send": { "callback": "deck:browse" },
+        "expect": [
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "📚 Your decks\n\nCommon Words — 5 cards, 5 due\nUseful Phrases — 5 cards, 5 due"
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

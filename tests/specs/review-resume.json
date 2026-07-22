@@ -1,0 +1,64 @@
+[
+  {
+    "name": "Review session offers to resume when one exists",
+    "steps": [
+      {
+        "send": { "callback": "deck:import_starter" },
+        "expect": [
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "✅ Imported Common Words and Useful Phrases with 10 cards."
+            }
+          }
+        ]
+      },
+      {
+        "send": { "callback": "review:start" },
+        "expect": [
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "📝 Choose a deck to review:"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Resume shows remaining cards count",
+    "steps": [
+      {
+        "send": { "callback": "deck:import_starter" },
+        "expect": [
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "✅ Imported Common Words and Useful Phrases with 10 cards."
+            }
+          }
+        ]
+      },
+      {
+        "send": { "callback": "review:start" },
+        "expect": [
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "📝 Choose a deck to review:"
+            }
+          }
+        ]
+      },
+      {
+        "send": { "callback": "review:start" },
+        "expect": [
+          {
+            "method": "editMessageText"
+          }
+        ]
+      }
+    ]
+  }
+]

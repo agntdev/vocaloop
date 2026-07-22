@@ -8,6 +8,15 @@ const composer = new Composer<Ctx>();
 composer.callbackQuery(/^card:add:(.+)$/, async (ctx) => {
   await ctx.answerCallbackQuery();
   const deckId = ctx.match[1];
+  if (ctx.session.reviewSession) {
+    await ctx.editMessageText("Finish your current review session before adding cards.", {
+      reply_markup: inlineKeyboard([
+        [inlineButton("▶️ Resume review", "review:resume")],
+        [inlineButton("⬅️ Back to menu", "menu:main")],
+      ]),
+    });
+    return;
+  }
   const deck = getDeck(ctx, deckId);
   if (!deck) {
     await ctx.editMessageText("Deck not found.", {
