@@ -42,6 +42,23 @@ function showReviewMenu(ctx: Ctx, decks: ReturnType<typeof getDecks>, now: numbe
 
 composer.callbackQuery("review:start", async (ctx) => {
   await ctx.answerCallbackQuery();
+  const existingSession = ctx.session.reviewSession;
+  if (existingSession && existingSession.cardIds.length > 0) {
+    const remaining = existingSession.cardIds.length - existingSession.currentIndex;
+    if (remaining > 0) {
+      await ctx.editMessageText(
+        `You have a review session in progress — ${remaining} cards remaining.`,
+        {
+          reply_markup: inlineKeyboard([
+            [inlineButton("▶️ Resume", "review:resume")],
+            [inlineButton("🗑 Discard", "review:discard")],
+            [inlineButton("⬅️ Back to menu", "menu:main")],
+          ]),
+        },
+      );
+      return;
+    }
+  }
   const decks = getDecks(ctx);
   const now = Date.now();
   const { text, keyboard } = showReviewMenu(ctx, decks, now);
@@ -216,12 +233,50 @@ composer.callbackQuery("review:pause", async (ctx) => {
     return;
   }
   const remaining = session.cardIds.length - session.currentIndex;
-  ctx.session.reviewSession = undefined;
   await ctx.editMessageText(`⏸ Paused — ${remaining} cards remaining. Tap Start Reviews to continue.`, {
     reply_markup: inlineKeyboard([
       [inlineButton("⬅️ Back to menu", "menu:main")],
     ]),
   });
+});
+
+composer.callbackQuery("review:resume", async (ctx) => {
+  await ctx.answerCallbackQuery();
+  const session = ctx.session.reviewSession;
+  if (!session || session.currentIndex >= session.cardIds.length) {
+    ctx.session.reviewSession = undefined;
+    await ctx.editMessageText("Session expired. Tap Start Reviews to begin again.", {
+      reply_markup: inlineKeyboard([[inlineButton("⬅️ Back to menu", "menu:main")]]),
+    });
+    return;
+  }
+  const card = getCard(ctx, session.cardIds[session.currentIndex]);
+  if (!card) {
+    ctx.session.reviewSession = undefined;
+    await ctx.editMessageText("Card not found. Tap Start Reviews to begin again.", {
+      reply_markup: inlineKeyboard([[inlineButton("⬅️ Back to menu", "menu:main")]]),
+    });
+    return;
+  }
+  const idx = session.currentIndex;
+  await ctx.editMessageText(
+    `Card ${idx + 1} of ${session.cardIds.length}\n\n${card.front}`,
+    {
+      reply_markup: inlineKeyboard([
+        [inlineButton("👁 Reveal", `review:reveal:${idx}`)],
+        [inlineButton("⏸ Pause", `review:pause`)],
+      ]),
+    },
+  );
+});
+
+composer.callbackQuery("review:discard", async (ctx) => {
+  await ctx.answerCallbackQuery();
+  ctx.session.reviewSession = undefined;
+  const decks = getDecks(ctx);
+  const now = Date.now();
+  const { text, keyboard } = showReviewMenu(ctx, decks, now);
+  await ctx.editMessageText(text, { reply_markup: keyboard });
 });
 
 export default composer;

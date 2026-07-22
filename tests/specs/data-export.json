@@ -1,0 +1,56 @@
+[
+  {
+    "name": "Export shows empty state when no decks exist",
+    "steps": [
+      {
+        "send": { "callback": "data:export" },
+        "expect": [
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "No decks to export yet. Create a deck and add some cards first."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Export shows empty state when decks have no cards",
+    "steps": [
+      {
+        "send": { "callback": "deck:add" },
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": {
+              "text": "What should this deck be called?"
+            }
+          }
+        ]
+      },
+      {
+        "send": { "text": "Empty Deck" },
+        "expect": [
+          {
+            "method": "sendMessage",
+            "payload": {
+              "text": "✅ Deck \"Empty Deck\" created."
+            }
+          }
+        ]
+      },
+      {
+        "send": { "callback": "data:export" },
+        "expect": [
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "No cards to export yet. Add some cards to your decks first."
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

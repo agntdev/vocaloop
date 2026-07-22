@@ -1,0 +1,72 @@
+[
+  {
+    "name": "Account manage shows options",
+    "steps": [
+      {
+        "send": { "callback": "account:manage" },
+        "expect": [
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "Account settings\n\nExport your data before deleting, or delete everything now."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Account delete shows confirmation",
+    "steps": [
+      {
+        "send": { "callback": "account:confirm_delete" },
+        "expect": [
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "⚠️ This will permanently delete all your decks, cards, and settings. This cannot be undone."
+            }
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Account delete clears all data",
+    "steps": [
+      {
+        "send": { "callback": "deck:import_starter" },
+        "expect": [
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "✅ Imported Common Words and Useful Phrases with 10 cards."
+            }
+          }
+        ]
+      },
+      {
+        "send": { "callback": "account:do_delete" },
+        "expect": [
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "All data deleted. Tap /start to begin fresh."
+            }
+          }
+        ]
+      },
+      {
+        "send": { "callback": "deck:browse" },
+        "expect": [
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "📚 No decks yet — tap Create Deck to add one."
+            }
+          }
+        ]
+      }
+    ]
+  }
+]
