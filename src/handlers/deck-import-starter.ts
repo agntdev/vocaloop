@@ -1,7 +1,9 @@
 import { Composer } from "grammy";
 import type { Ctx } from "../bot.js";
-import { inlineButton, inlineKeyboard } from "../toolkit/index.js";
+import { inlineButton, inlineKeyboard, registerMainMenuItem } from "../toolkit/index.js";
 import { getDecks, addStarterDecks } from "../data.js";
+
+registerMainMenuItem({ label: "📥 Import Decks", data: "deck:import_starter", order: 40 });
 
 const composer = new Composer<Ctx>();
 

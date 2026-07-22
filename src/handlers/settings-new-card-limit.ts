@@ -1,7 +1,9 @@
 import { Composer } from "grammy";
 import type { Ctx } from "../bot.js";
-import { inlineButton, inlineKeyboard } from "../toolkit/index.js";
+import { inlineButton, inlineKeyboard, registerMainMenuItem } from "../toolkit/index.js";
 import { getUserSettings, updateUserSettings } from "../data.js";
+
+registerMainMenuItem({ label: "🔢 Daily Limit", data: "settings:new_card_limit", order: 50 });
 
 const composer = new Composer<Ctx>();
 
