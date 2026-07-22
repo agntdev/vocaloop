@@ -1,7 +1,9 @@
 import { Composer } from "grammy";
 import type { Ctx } from "../bot.js";
-import { inlineButton, inlineKeyboard } from "../toolkit/index.js";
+import { inlineButton, inlineKeyboard, registerMainMenuItem } from "../toolkit/index.js";
 import { getUserSettings, getDecks, getTotalCardsCount, getLearnedCardsCount, getDueCards } from "../data.js";
+
+registerMainMenuItem({ label: "📊 Stats", data: "stats:show", order: 45 });
 
 const composer = new Composer<Ctx>();
 
@@ -30,6 +32,13 @@ function statsText(ctx: Ctx): string {
 
 composer.command("stats", async (ctx) => {
   await ctx.reply(statsText(ctx), {
+    reply_markup: inlineKeyboard([[inlineButton("⬅️ Back to menu", "menu:main")]]),
+  });
+});
+
+composer.callbackQuery("stats:show", async (ctx) => {
+  await ctx.answerCallbackQuery();
+  await ctx.editMessageText(statsText(ctx), {
     reply_markup: inlineKeyboard([[inlineButton("⬅️ Back to menu", "menu:main")]]),
   });
 });

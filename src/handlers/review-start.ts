@@ -1,6 +1,6 @@
 import { Composer } from "grammy";
 import type { Ctx } from "../bot.js";
-import { inlineButton, inlineKeyboard } from "../toolkit/index.js";
+import { inlineButton, inlineKeyboard, registerMainMenuItem } from "../toolkit/index.js";
 import {
   getDecks,
   getCardsForDeck,
@@ -12,6 +12,8 @@ import {
   addCard,
 } from "../data.js";
 import { sm2, qualityFromButton } from "../sm2.js";
+
+registerMainMenuItem({ label: "📝 Reviews", data: "review:start", order: 10 });
 
 const composer = new Composer<Ctx>();
 

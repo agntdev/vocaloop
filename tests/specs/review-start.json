@@ -25,5 +25,21 @@
         ]
       }
     ]
+  },
+  {
+    "name": "Empty session shows friendly message when no cards are due",
+    "steps": [
+      {
+        "send": { "callback": "review:start" },
+        "expect": [
+          {
+            "method": "editMessageText",
+            "payload": {
+              "text": "🎉 All caught up — no cards due right now. Add more cards or check back later."
+            }
+          }
+        ]
+      }
+    ]
   }
 ]

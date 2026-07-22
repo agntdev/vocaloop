@@ -1,7 +1,9 @@
 import { Composer } from "grammy";
 import type { Ctx } from "../bot.js";
-import { inlineButton, inlineKeyboard } from "../toolkit/index.js";
+import { inlineButton, inlineKeyboard, registerMainMenuItem } from "../toolkit/index.js";
 import { getUserSettings, updateUserSettings } from "../data.js";
+
+registerMainMenuItem({ label: "⏰ Reminder", data: "settings:notification_schedule", order: 60 });
 
 const composer = new Composer<Ctx>();
 
