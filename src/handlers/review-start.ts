@@ -10,6 +10,7 @@ import {
   getUserSettings,
   getNewCardsToday,
   addCard,
+  now,
 } from "../data.js";
 import { sm2, qualityFromButton } from "../sm2.js";
 
@@ -60,18 +61,18 @@ composer.callbackQuery("review:start", async (ctx) => {
     }
   }
   const decks = getDecks(ctx);
-  const now = Date.now();
-  const { text, keyboard } = showReviewMenu(ctx, decks, now);
+  const currentTime = now();
+  const { text, keyboard } = showReviewMenu(ctx, decks, currentTime);
   await ctx.editMessageText(text, { reply_markup: keyboard });
 });
 
 composer.callbackQuery(/^review:deck:(.+)$/, async (ctx) => {
   await ctx.answerCallbackQuery();
   const deckId = ctx.match[1];
-  const now = Date.now();
+  const currentTime = now();
   const settings = getUserSettings(ctx);
-  const dueCards = getDueCards(ctx, deckId, now);
-  const newCardsToday = getNewCardsToday(ctx, now);
+  const dueCards = getDueCards(ctx, deckId, currentTime);
+  const newCardsToday = getNewCardsToday(ctx, currentTime);
   const limit = settings.dailyNewCardLimit;
   const newCardsInDeck = dueCards.filter((c) => c.state === "new");
   const allowedNew = Math.max(0, limit - newCardsToday);
@@ -92,7 +93,7 @@ composer.callbackQuery(/^review:deck:(.+)$/, async (ctx) => {
     deckId,
     cardIds: cardsToShow.map((c) => c.id),
     currentIndex: 0,
-    startTime: now,
+    startTime: currentTime,
   };
 
   const card = cardsToShow[0];
@@ -181,17 +182,17 @@ composer.callbackQuery(/^review:rate:(\d+):(again|hard|good|easy)$/, async (ctx)
   }
 
   const quality = qualityFromButton(rating);
-  const now = Date.now();
+  const currentTime = now();
   const updated = sm2(quality, {
     easeFactor: card.easeFactor,
     intervalDays: card.intervalDays,
     repetitionCount: card.repetitionCount,
     dueDate: card.dueDate,
     state: card.state,
-  }, now);
+  }, currentTime);
   updateCard(ctx, cardId, {
     ...updated,
-    lastReviewed: now,
+    lastReviewed: currentTime,
   });
 
   const nextIdx = cardIdx + 1;
@@ -274,8 +275,8 @@ composer.callbackQuery("review:discard", async (ctx) => {
   await ctx.answerCallbackQuery();
   ctx.session.reviewSession = undefined;
   const decks = getDecks(ctx);
-  const now = Date.now();
-  const { text, keyboard } = showReviewMenu(ctx, decks, now);
+  const currentTime = now();
+  const { text, keyboard } = showReviewMenu(ctx, decks, currentTime);
   await ctx.editMessageText(text, { reply_markup: keyboard });
 });
 
